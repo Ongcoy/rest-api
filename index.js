@@ -4,23 +4,15 @@ dotenv.config()
 
 const { API_URL } = process.env; 
 const app = Express();
-const router = Router();
+//routers
+import userRouter from "./src/modules/user/user.route.js";
 
-
-app.use(json()).use(
-    router.get("/", function (req, res) {
-        return res.send("Hello from rest-api v2");
-    }),
-    router.post("/post-request/", (req, res) => {
-        const body = req.body;
-        const params = req.params;
-        const queryParams = req.query;
-
-        res
-        .status(200)
-        .json({Body: body, Params: params, "Query params": queryParams});
-    })
-);
+app
+.use(json())
+.use(`${API_URL}users`, userRouter) //localhost:3000/api/v1/users
+.use("*", (req, res) => {
+    return res.status(404).send("Not Found...");
+});
 
 app.listen(3000, function() {
     console.log(API_URL);
